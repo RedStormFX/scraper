@@ -8,6 +8,7 @@
   },
   "author": "",
   "license": "ISC",
+  "repository": "https://github.com/RedStormFX/scraper.git",
   "dependencies": {
     "puppeteer": "^19.3.0",
     "puppeteer-extra": "^3.3.4",
