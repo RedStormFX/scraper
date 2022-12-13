@@ -10,6 +10,8 @@
   "license": "ISC",
   "repository": "https://github.com/RedStormFX/scraper.git",
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
+    "googleapis": "^105.0.0",
     "puppeteer": "^19.3.0",
     "puppeteer-extra": "^3.3.4",
     "puppeteer-extra-plugin-adblocker": "^2.13.5",
