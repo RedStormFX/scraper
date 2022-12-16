@@ -8,7 +8,7 @@ const scraperObject = {
       ".mx-auto.max-w-ycdc-page > section:nth-child(26) > div > table",
     );
     const urls = await page.$$eval(
-      "div.top-companies table.companies-table tr.top-company-row, section.top-companies table.companies-table tr.top-company-row",
+      "tr.top-company-row:nth-child(-n+100)",
       (links) => {
         links = links.map((el) => el.querySelector("a").href);
         return links;
@@ -20,53 +20,65 @@ const scraperObject = {
         let dataObj = {};
         let newPage = await browser.newPage();
         await newPage.goto(link);
-
-        await newPage.waitForSelector(".max-w-full > h1");
-        dataObj["companyName"] = await newPage.$eval(
-          ".max-w-full > h1",
-          (text) => text.textContent,
-          //idk how solve problem when selector not found if error 500
-        );
-        dataObj["shortDescription"] = await newPage.$eval(
-          ".text-xl",
-          (text) => text.textContent,
-        );
-        dataObj["companyWebsite"] = await newPage.$eval(
-          ".leading-none",
-          (text) => text.querySelector("a").href,
-        );
+        try {
+          await newPage.waitForSelector(".max-w-full > h1");
+        } catch (err) {
+          resolve(null);
+          await newPage.close();
+          return null;
+        }
+        dataObj["companyName"] = await newPage
+          .$eval(".max-w-full > h1", (text) => text.textContent)
+          .catch((err) => "N/A");
+        dataObj["shortDescription"] = await newPage
+          .$eval(".text-xl", (text) => text.textContent)
+          .catch((err) => "N/A");
+        dataObj["companyWebsite"] = await newPage
+          .$eval(".leading-none", (text) => text.querySelector("a").href)
+          .catch((err) => "N/A");
         //idk how i can catch all tags
-        dataObj["Tags"] = await newPage.$eval(
-          ".flex-wrap.gap-y-2.gap-x-2",
-          (text) => text.querySelector("span:nth-child(n)").textContent,
-        );
+        dataObj["Tags"] = await newPage
+          .$$eval(
+            ".space-y-3 .flex.flex-row.align-center.flex-wrap .ycdc-badge",
+            (budges) =>
+              budges
+                .map(
+                  (el) =>
+                    Array.from(el.childNodes).find(
+                      (node) => node.nodeType === 3,
+                    ).textContent,
+                )
+                .join(" / "),
+          )
+          .catch((err) => "N/A");
 
-        dataObj["teamSize"] = await newPage.$eval(
-          ".ycdc-card",
-          (text) =>
-            text.querySelector("div:nth-child(2) > span:nth-child(2)")
-              .textContent,
-        );
-        dataObj["companyLinkedIn"] = await newPage.$eval(
-          ".space-x-2",
-          (text) => text.querySelector("a").href,
-        );
-        dataObj["contactName"] = await newPage.$eval(
-          ".leading-snug",
-          (text) => text.querySelector(".font-bold").textContent,
-        );
-        dataObj["availableJobs"] = await newPage.$eval(
-          "div.my-8.mb-4",
-          (text) => {
+        dataObj["teamSize"] = await newPage
+          .$eval(
+            ".ycdc-card",
+            (text) =>
+              text.querySelector("div:nth-child(2) > span:nth-child(2)")
+                .textContent,
+          )
+          .catch((err) => "N/A");
+        dataObj["companyLinkedIn"] = await newPage
+          .$eval(".space-x-2", (text) => text.querySelector("a").href)
+          .catch((err) => "N/A");
+        dataObj["contactName"] = await newPage
+          .$eval(
+            ".leading-snug",
+            (text) => text.querySelector(".font-bold").textContent,
+          )
+          .catch((err) => "N/A");
+        dataObj["availableJobs"] = await newPage
+          .$eval("div.my-8.mb-4", (text) => {
             text = text.querySelector("div:nth-child(2) > span").textContent;
             if (text !== "0") {
               return (text = true);
             } else {
               return (text = false);
             }
-          },
-        );
-
+          })
+          .catch((err) => "N/A");
         resolve(dataObj);
         await newPage.close();
       });
