@@ -34,7 +34,10 @@ const scraperObject = {
           .$eval(".text-xl", (text) => text.textContent)
           .catch((err) => "N/A");
         dataObj["companyWebsite"] = await newPage
-          .$eval(".leading-none", (text) => text.querySelector("a").href)
+          .$eval(
+            ".my-8.mb-4 > div > div",
+            (text) => text.querySelector("a").href,
+          )
           .catch((err) => "N/A");
         //idk how i can catch all tags
         dataObj["Tags"] = await newPage
