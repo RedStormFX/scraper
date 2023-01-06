@@ -14,7 +14,7 @@ app.get("/metadata", async (req, res) => {
     await Authorization.getAuthSheets();
   const metadata = await googleSheets.spreadsheets.get({
     auth,
-    spreadsheetId: "15XBhRCPujAH6cJ-Mz3HOcEL-jY0X85Cge-PM9kyxFN0",
+    spreadsheetId,
   });
   res.send(metadata.data);
 });
@@ -29,7 +29,7 @@ app.post("/addRow", async (req, res) => {
     range: "'Лист1'!A1:C1",
     valueInputOption: "USER_ENTERED",
     resource: {
-      values: getDataResult.companyName,
+      values: [],
     },
   });
   res.send(row.data);
