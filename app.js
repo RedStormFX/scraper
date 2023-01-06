@@ -38,7 +38,7 @@ app.post("/addRow", async (req, res) => {
 app.post("/start", async (req, res) => {
   let browserInstance = browserObject.startBrowser();
   scraperController(browserInstance);
-  res.send("Parsing is running");
+  res.send("Parsing is running", "200 OK");
 });
 app.get("/result", async (req, res) => {
   res.send(getDataResult);

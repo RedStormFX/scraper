@@ -11,7 +11,7 @@ const scraperObject = {
         ".mx-auto.max-w-ycdc-page > section:nth-child(26) > div > table",
       );
       const urls = await page.$$eval(
-        "tr.top-company-row:nth-child(-n+1)",
+        "tr.top-company-row:nth-child(-n+100)",
         (links) => {
           links = links.map((el) => el.querySelector("a").href);
           return links;
