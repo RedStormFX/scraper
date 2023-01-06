@@ -1,6 +1,6 @@
 const browserObject = require("./helpers/browser");
 const scraperController = require("./controlers/pageController");
-const getDataResult = require("./helpers/jsonParser");
+const data = require("./helpers/jsonParser");
 const express = require("express");
 
 const Authorization = require("./services/google_auth");
@@ -8,32 +8,29 @@ const Authorization = require("./services/google_auth");
 const app = express();
 app.use(express.json());
 const PORT = 3001;
-
-app.get("/metadata", async (req, res) => {
-  try {
-    const { googleSheets, auth, spreadsheetId } =
-      await Authorization.getAuthSheets();
-    const metadata = await googleSheets.spreadsheets.get({
-      auth,
-      spreadsheetId,
-    });
-    res.status(200).send(metadata.data);
-  } catch (e) {
-    res.status(300).send("spreadsheetId or credentials.jsone is invalid");
-  }
-});
-
 app.post("/addRow", async (req, res) => {
   const { googleSheets, auth, spreadsheetId } =
     await Authorization.getAuthSheets();
   try {
-    const row = await googleSheets.spreadsheets.values.append({
+    const row = await googleSheets.spreadsheets.values.update({
       auth,
       spreadsheetId,
-      range: "'Test'!A1:C1",
+      range: "'Test'!A:H",
       valueInputOption: "USER_ENTERED",
       resource: {
-        values: getDataResult,
+        values: [
+          [
+            "Company Name",
+            "Short Description",
+            "Company Web Site",
+            "Tags",
+            "Team Size",
+            "Company Linkedin",
+            "Contact Name",
+            "Available Jobs",
+          ],
+          ...data.map((el) => Object.values(el)),
+        ],
       },
     });
     res.send(row.data);
@@ -52,7 +49,7 @@ app.post("/start", async (req, res) => {
   }
 });
 app.get("/result", async (req, res) => {
-  res.send(getDataResult);
+  res.send(data);
 });
 
 app.listen(PORT, () => console.log(`Server is running on ${PORT} port`));

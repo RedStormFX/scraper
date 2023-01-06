@@ -1,6 +1,7 @@
+const fs = require("fs");
 const getDataResult = () => {
-  const result = fs.readFileSync("./data.json", "utf-8");
-  return JSON.parse(result);
+  const getData = fs.readFileSync("./data.json", "utf-8");
+  return JSON.parse(getData);
 };
 
 module.exports = getDataResult();
