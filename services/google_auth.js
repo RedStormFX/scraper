@@ -1,4 +1,5 @@
 const { google } = require("googleapis");
+require("dotenv").config();
 
 async function getAuthSheets() {
   const auth = new google.auth.GoogleAuth({
@@ -11,7 +12,7 @@ async function getAuthSheets() {
     version: "v4",
     auth: client,
   });
-  const spreadsheetId = "15XBhRCPujAH6cJ-Mz3HOcEL-jY0X85Cge-PM9kyxFN0";
+  const spreadsheetId = process.env.SPREADSHEETID;
 
   return {
     auth,

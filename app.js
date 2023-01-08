@@ -3,17 +3,17 @@ const routes = require("./routes/routes");
 const express = require("express");
 require("dotenv").config();
 
-const Authorization = require("./services/google_auth");
-
 const app = express();
 app.use(express.json());
 
-const mongoString = process.env.DATABASE_URL;
-mongoose.set("strictQuery", false);
-mongoose.connect(mongoString, {
+const mongoOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
+};
+
+const mongoString = process.env.DATABASE_URL;
+mongoose.set("strictQuery", false);
+mongoose.connect(mongoString, mongoOptions);
 
 const database = mongoose.connection;
 
@@ -29,4 +29,4 @@ database.once("connected", () => {
 
 const PORT = process.env.PORT;
 
-app.listen(PORT, () => console.log(`Server is running on ${PORT} port`));
+app.listen(PORT, () => console.log(`Server is running localhost:${PORT} port`));
