@@ -2,7 +2,7 @@ const express = require("express");
 const Model = require("../model/model");
 const router = express.Router();
 const data = require("../helpers/jsonParser");
-const importData = require("../helpers/importData");
+
 const browserObject = require("../helpers/browser");
 const scraperController = require("../controlers/pageController");
 
@@ -53,11 +53,12 @@ router.post("/sendtosheets", async (req, res) => {
 });
 //import data to mongodb
 router.post("/post", async (req, res) => {
-  const parseData = new Model(importData);
-  //importData();
+  // const parseData = new Model(importData);
+  const importData = require("../helpers/importData");
+  importData;
   try {
-    const dataToSave = await parseData.save();
-    res.status(200).json(dataToSave);
+    //const dataToSave = await parseData.save();
+    res.status(200).json("Data already added to db");
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
